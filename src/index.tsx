@@ -20,6 +20,7 @@ import AdministratorFeature from './components/AdministratorFeature/Administrato
 import AdministratorFurniture from './components/AdministratorFurniture/AdministratorFurniture';
 import AdministratorPhoto from './components/AdministratorPhoto/AdministratorPhoto';
 import FurniturePage from './components/FurniturePage/FurniturePage';
+import SimpleMap from './components/SimpleMap/SimpleMap';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -37,6 +38,7 @@ ReactDOM.render(
         <Route path="/administrator/dashboard/feature/:cId" component={ AdministratorFeature }/>
         <Route path="/administrator/dashboard/furnitures/" component = { AdministratorFurniture }/>
         <Route path="/administrator/dashboard/photo/:fId" component = { AdministratorPhoto }/>
+        <Route path="/viewmap" component = { SimpleMap }/>
 
       </Switch>
     </HashRouter>

@@ -20,6 +20,7 @@ interface AdministratorFurnitureState {
         visible: boolean;
         message: string;
         name: string;
+        status: string;
         categoryId: number;
         description: string;
         price: number;
@@ -74,6 +75,7 @@ class AdministratorFurniture extends React.Component {
             addModal: {
                 visible: false,
                 name: '',
+                status: 'available',
                 categoryId: 1,
                 description: '',
                 price: 0.01,
@@ -84,10 +86,10 @@ class AdministratorFurniture extends React.Component {
             editModal: {
                 visible: false,
                 message: '',
+                status: 'available',
                 name: '',
                 categoryId: 1,
                 description: '',
-                status: 'available',
                 price: 0.01,
                 features: [],
             },
@@ -269,7 +271,6 @@ class AdministratorFurniture extends React.Component {
                 description: furniture.description,
                 imageUrl: furniture.photos[0].imagePath,
                 price: furniture.furniturePrices[furniture.furniturePrices.length-1].price,
-
                 status: furniture.status,
                 furnitureFeatures: furniture.furnitureFeatures,
                 features: furniture.features,
@@ -342,6 +343,8 @@ class AdministratorFurniture extends React.Component {
                                     <th>Name</th>
                                     <th>Category</th>
                                     <th>Status</th>
+                                    <th>Store 1</th>
+                                    <th>Store 2</th>
                                     <th className="text-right">Price</th>
                                     <th></th>
                                 </tr>
@@ -353,7 +356,6 @@ class AdministratorFurniture extends React.Component {
                                         <td>{ furniture.name }</td>
                                         <td>{ furniture.category?.name }</td>
                                         <td>{ furniture.status }</td>
-                                        {/* <td>{ furniture.isPromoted ? 'Yes' : 'No' }</td> */}
                                         <td className="text-right">{ furniture.price }</td>
                                         <td className="text-center">
                                         <Link to={"/administrator/dashboard/photo/" + furniture.furnitureId }
@@ -454,16 +456,15 @@ class AdministratorFurniture extends React.Component {
                                             onChange={ (e) => this.setEditModalStringFieldState('description', e.target.value) } 
                                             rows={10}/>
                         </Form.Group>
-                        <Form.Group>
-                            <Form.Label htmlFor="edit-status">Select status</Form.Label>
-                            <Form.Control id="edit-status" as="select"
-                                            value={ this.state.editModal.status.toString() }
-                                            onChange={ (e) => this.setEditModalStringFieldState('status', e.target.value) }>
-                                <option value="available">Available</option>
-                                <option value="visible">Visible</option>
-                                <option value="hidden">Hidden</option>
-                            </Form.Control>
-                        </Form.Group>
+                            <Form.Group>
+                                <Form.Label htmlFor="add-status">Status</Form.Label>
+                                <Form.Control id="add-status" as="select" value={this.state.editModal.status.toString()}
+                                    onChange={ (e) => this.setAddModalStringFieldState('status', e.target.value)}>
+                               <option value="available">Available</option>
+                               <option value="visible">Not available</option>
+                               <option value="hidden">Hidden</option>
+                                </Form.Control>
+                            </Form.Group>
                         <Form.Group>
                             <Form.Label htmlFor="edit-price">Price</Form.Label>
                             <Form.Control type="number" id="edit-price" min={ 0.01 } step={ 0.01 } 

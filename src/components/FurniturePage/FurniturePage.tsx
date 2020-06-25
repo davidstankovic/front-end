@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, Card, Table, Button, Modal, Form, Alert, Row, Col } from 'react-bootstrap';
 import { faListAlt, faPlus, faInfoCircle, faEdit, faSave, faImages } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {GoogleMap, withGoogleMap, withScriptjs} from 'react-google-maps'
 import { Redirect, Link } from 'react-router-dom';
 import FurnitureType from '../../types/FurnitureType';
 import PhotoType from '../../types/PhotoType';
@@ -11,13 +12,18 @@ import api, { ApiResponse, apiFile } from '../../api/api';
 import CategoryType from '../../types/CategoryType';
 import ApiCategoryDto from '../../dtos/ApiCategoryDto';
 import { ApiConfig } from '../../config/api.confing';
+import SimpleMap from '../SimpleMap/SimpleMap';
+import GoogleMapReact from 'google-map-react';
+import Marker from '../SimpleMap/Marker';
+import StoreType from '../../types/StoreType';
+import ApiStoreDto from '../../dtos/ApiStoreDto';
 
 interface FurnitureState {
     furnitures: FurnitureType[];
     categories: CategoryType[];
     status: string[];
     photos: PhotoType[];
-
+    stores: StoreType[];
     editModal: {
         furnitureId?: number;
         message: string;
@@ -47,6 +53,7 @@ interface FeatureBaseType {
     featureId: number;
 }
 
+
 class FurniturePage extends React.Component<FurniturePageProperties> {
     state: FurnitureState;
 
@@ -54,6 +61,7 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
         super(props);
 
         this.state = {
+            stores: [],
             furnitures: [],
             categories: [],
             photos: [],
@@ -73,8 +81,7 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
                 features: [],
             },
         };
-    }
-
+    } 
     private setEditModalFeatureValue(featureId: number, value: string){
         const editFeatures: {featureId: number; value:string;}[] = [... this.state.editModal.features];
         for (const feature of editFeatures){
@@ -118,6 +125,7 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
         this.getCategories();
         this.getPhotos();
         this.getFurnitures();
+        this.getStores();
     }
     componentDidUpdate(oldProps: any){
         if (this.props.match.params.fId === oldProps.match.params.fId){
@@ -189,7 +197,6 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
                 description: furniture.description,
                 imageUrl: furniture.photos[0].imagePath,
                 price: furniture.furniturePrices[furniture.furniturePrices.length-1].price,
-
                 status: furniture.status,
                 furnitureFeatures: furniture.furnitureFeatures,
                 features: furniture.features,
@@ -204,14 +211,15 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
         }))
     }
 
-    render() {
 
+
+    render() {
+        
         return (
             <Container>
                 <RoleMainMenu role="visitor" />  
                  { this.state.furnitures.map(furniture => (
                 <>
-                
                     <h1 className="my-4">{ furniture.name } 
                             <small>|{ furniture.category?.name }</small>
                     </h1>
@@ -232,10 +240,12 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
                             { this.state.editModal.features.map( this.printEditModalFeatureInput, this) }
                         </ul>
                         Availability: { furniture.status }
+                        
+                 <h1>{this.state.stores.map(this.printSingleStore, this)}</h1>
                         <br/>
-                        Price: { furniture.price }
+                        Price: { furniture.price } $
+                        <SimpleMap {...furniture }></SimpleMap>
                         </div>
-
                     </div>
                     <h3 className="my-4">More images:</h3>
 
@@ -251,6 +261,15 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
         );
     }
 
+    private printSingleStore(store: StoreType){
+        return (
+                <Card>
+                    <Card.Body>
+                        {store.name}
+                    </Card.Body>
+                </Card>
+        )
+    }
     private printSinglePhoto(photo: PhotoType){
         return (
                 <Card>
@@ -305,28 +324,31 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
 
     }
 
-    private doEditFurniture() {
-        api('/api/furniture/' + String(this.state.editModal.furnitureId), 'patch', {
-            name: this.state.editModal.name,
-            description: this.state.editModal.description,
-            price: this.state.editModal.price,
-            status: this.state.editModal.status,
-            features: this.state.editModal.features
-            .map(feature => ({
-                featureId: feature.featureId,
-                value: feature.value
-            }))
-        }, 'visitor')
+
+    private getStores() {
+        api('/api/store/', 'get', {}, 'visitor')
         .then((res: ApiResponse) => {
 
             if (res.status === 'error') {
-                this.setEditModalStringFieldState('message', JSON.stringify(res.data));
                 return;
             }
-
-            this.setEditModalVisibleState(false);
-            this.getFurnitures();
+            this.putStoresInState(res.data);
         });
     }
+    private putStoresInState(data?: ApiStoreDto[]){
+        const stores: StoreType[] = data?.map(store => {
+            return {
+                storeId: store.storeId,
+                name: store.name,
+                geoLng: store.geoLng,
+                geoLat: store.geoLat,
+                address: store.address
+            }
+        });
+        this.setState(Object.assign(this.state,{
+            stores: stores
+        }))
+    }
 }
+
 export default FurniturePage;

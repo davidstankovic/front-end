@@ -23,6 +23,13 @@ export default class FurnitureType {
         featureId: number;
         name: string;
     }[];
+    stores?: {
+        storeId: number;
+        address: string;
+        name: string;
+        geoLat: number;
+        geoLng: number;
+    }[];
     categoryId?: number;
     category?: {
         name: string;
