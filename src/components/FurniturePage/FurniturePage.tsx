@@ -24,6 +24,8 @@ interface FurnitureState {
     status: string[];
     photos: PhotoType[];
     stores: StoreType[];
+    availableOne: number;
+    availableTwo: number;
     editModal: {
         furnitureId?: number;
         message: string;
@@ -61,6 +63,9 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
         super(props);
 
         this.state = {
+                    
+            availableOne: 1,
+            availableTwo: 1,
             stores: [],
             furnitures: [],
             categories: [],
@@ -125,7 +130,6 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
         this.getCategories();
         this.getPhotos();
         this.getFurnitures();
-        this.getStores();
     }
     componentDidUpdate(oldProps: any){
         if (this.props.match.params.fId === oldProps.match.params.fId){
@@ -202,7 +206,9 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
                 features: furniture.features,
                 furniturePrices: furniture.furniturePrices,
                 photos: furniture.photos,
-                category: furniture.category,
+                category: furniture.category,            
+                availableOne: furniture.availableOne,
+                availableTwo: furniture.availableTwo,
                 categoryId: furniture.categoryId
             }
         });
@@ -240,11 +246,11 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
                             { this.state.editModal.features.map( this.printEditModalFeatureInput, this) }
                         </ul>
                         Availability: { furniture.status }
-                        
-                 <h1>{this.state.stores.map(this.printSingleStore, this)}</h1>
                         <br/>
+                        <div>
                         Price: { furniture.price } $
                         <SimpleMap {...furniture }></SimpleMap>
+                        </div>
                         </div>
                     </div>
                     <h3 className="my-4">More images:</h3>
@@ -261,15 +267,6 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
         );
     }
 
-    private printSingleStore(store: StoreType){
-        return (
-                <Card>
-                    <Card.Body>
-                        {store.name}
-                    </Card.Body>
-                </Card>
-        )
-    }
     private printSinglePhoto(photo: PhotoType){
         return (
                 <Card>
@@ -299,6 +296,8 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
         this.setEditModalStringFieldState('description', String(furniture.description));
         this.setEditModalStringFieldState('status', String(furniture.status));
         this.setEditModalNumberFieldState('price', furniture.price);
+        this.setEditModalNumberFieldState('availableOne', furniture.availableOne);
+        this.setEditModalNumberFieldState('availableTwo', furniture.availableTwo);
         // features ->>>>
         if(!furniture.categoryId) {
             return
@@ -322,32 +321,6 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
                     features: allFeatures
                 })))
 
-    }
-
-
-    private getStores() {
-        api('/api/store/', 'get', {}, 'visitor')
-        .then((res: ApiResponse) => {
-
-            if (res.status === 'error') {
-                return;
-            }
-            this.putStoresInState(res.data);
-        });
-    }
-    private putStoresInState(data?: ApiStoreDto[]){
-        const stores: StoreType[] = data?.map(store => {
-            return {
-                storeId: store.storeId,
-                name: store.name,
-                geoLng: store.geoLng,
-                geoLat: store.geoLat,
-                address: store.address
-            }
-        });
-        this.setState(Object.assign(this.state,{
-            stores: stores
-        }))
     }
 }
 

@@ -6,6 +6,8 @@ export default class FurnitureType {
     price?: number;
 
     status?: "available" | "visible" | "hidden";
+    availableOne?: number;
+    availableTwo?: number;
     furniturePrices?: {
         furniturePriceId: number;
         price: number;
@@ -22,13 +24,6 @@ export default class FurnitureType {
     features?: {
         featureId: number;
         name: string;
-    }[];
-    stores?: {
-        storeId: number;
-        address: string;
-        name: string;
-        geoLat: number;
-        geoLng: number;
     }[];
     categoryId?: number;
     category?: {

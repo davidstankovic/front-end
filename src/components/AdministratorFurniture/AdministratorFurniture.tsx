@@ -20,7 +20,6 @@ interface AdministratorFurnitureState {
         visible: boolean;
         message: string;
         name: string;
-        status: string;
         categoryId: number;
         description: string;
         price: number;
@@ -37,12 +36,14 @@ interface AdministratorFurnitureState {
         furnitureId?: number;
         visible: boolean;
         message: string;
-        name: string;
-        categoryId: number;
-        description: string;
-        status: string;
-        price: number;
-        features: {
+        name?: string;
+        categoryId?: number;
+        description?: string;
+        status?: string;
+        availableOne?: number;
+        availableTwo?: number;
+        price?: number;
+        features?: {
             use: number;
             featureId: number;
             name: string;
@@ -55,6 +56,8 @@ interface FeatureBaseType {
     name: string;
     featureId: number;
 }
+
+
 
 class AdministratorFurniture extends React.Component {
     state: AdministratorFurnitureState;
@@ -75,7 +78,6 @@ class AdministratorFurniture extends React.Component {
             addModal: {
                 visible: false,
                 name: '',
-                status: 'available',
                 categoryId: 1,
                 description: '',
                 price: 0.01,
@@ -85,13 +87,15 @@ class AdministratorFurniture extends React.Component {
 
             editModal: {
                 visible: false,
-                message: '',
-                status: 'available',
                 name: '',
                 categoryId: 1,
                 description: '',
+                status: 'available',
+                availableOne: 1,
+                availableTwo: 1,
                 price: 0.01,
                 features: [],
+                message: '',
             },
         };
     }
@@ -272,6 +276,8 @@ class AdministratorFurniture extends React.Component {
                 imageUrl: furniture.photos[0].imagePath,
                 price: furniture.furniturePrices[furniture.furniturePrices.length-1].price,
                 status: furniture.status,
+                availableOne: furniture.availableOne,
+                availableTwo: furniture.availableTwo,
                 furnitureFeatures: furniture.furnitureFeatures,
                 features: furniture.features,
                 furniturePrices: furniture.furniturePrices,
@@ -356,6 +362,8 @@ class AdministratorFurniture extends React.Component {
                                         <td>{ furniture.name }</td>
                                         <td>{ furniture.category?.name }</td>
                                         <td>{ furniture.status }</td>
+                                        <td>{ furniture.availableOne ? 'Yes' : 'No'}</td>
+                                        <td>{ furniture.availableTwo ? 'Yes' : 'No'}</td>
                                         <td className="text-right">{ furniture.price }</td>
                                         <td className="text-center">
                                         <Link to={"/administrator/dashboard/photo/" + furniture.furnitureId }
@@ -375,7 +383,15 @@ class AdministratorFurniture extends React.Component {
                 </Card>
 
                 <Modal centered show={ this.state.addModal.visible }
-                                onHide={ () => this.setAddModalVisibleState(false) }>
+                                onHide={ () => this.setAddModalVisibleState(false) }
+                                onEntered={
+                                   () => { 
+                                       if(document.getElementById('new-photo')) {
+                                        const filePicker: any = document.getElementById('new-photo');
+                                        filePicker.value = '';
+                                       }
+                                }}
+                                >
                     <Modal.Header closeButton>
                         <Modal.Title>
                             Add new furniture
@@ -457,12 +473,28 @@ class AdministratorFurniture extends React.Component {
                                             rows={10}/>
                         </Form.Group>
                             <Form.Group>
-                                <Form.Label htmlFor="add-status">Status</Form.Label>
-                                <Form.Control id="add-status" as="select" value={this.state.editModal.status.toString()}
-                                    onChange={ (e) => this.setAddModalStringFieldState('status', e.target.value)}>
-                               <option value="available">Available</option>
-                               <option value="visible">Not available</option>
-                               <option value="hidden">Hidden</option>
+                                <Form.Label htmlFor="new-status">Status</Form.Label>
+                                <Form.Control id="new-status" as="select" value={this.state.editModal.status.toString()}
+                                    onChange={ (e) => this.setEditModalStringFieldState('status', e.target.value)}>
+                                        <option value="available">Available</option>
+                                        <option value="visible">Visible</option>
+                                        <option value="hidden">Hidden</option>
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label htmlFor="new-availableOne">Store 1</Form.Label>
+                                <Form.Control id="new-availableOne" as="select" value={this.state.editModal.availableOne.toString()}
+                                    onChange={ (e) => this.setEditModalNumberFieldState('availableOne', Number(e.target.value))}>
+                                        <option value="1">Available</option>
+                                        <option value="0">Not available</option>
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label htmlFor="new-availableTwo">Store 1</Form.Label>
+                                <Form.Control id="new-availableTwo" as="select" value={this.state.editModal.availableTwo.toString()}
+                                    onChange={ (e) => this.setEditModalNumberFieldState('availableTwo', Number(e.target.value))}>
+                                        <option value="1">Available</option>
+                                        <option value="0">Not available</option>
                                 </Form.Control>
                             </Form.Group>
                         <Form.Group>
@@ -530,9 +562,18 @@ class AdministratorFurniture extends React.Component {
     private showAddModal() {
         this.setAddModalStringFieldState('message', '');
         this.setAddModalStringFieldState('name', '');
-        this.setAddModalStringFieldState('imagePath', '');
-        this.setAddModalNumberFieldState('parentFurnitureId', 'null');
+        this.setAddModalStringFieldState('description', '');
+        this.setAddModalNumberFieldState('categoryId', '1');
+        this.setAddModalNumberFieldState('price', '0.01');
+
+        this.setState(Object.assign(this.state,
+            Object.assign(this.state.addModal, {
+                features: []
+            })
+        ));
         this.setAddModalVisibleState(true);
+
+
     }
 
     private doAddFurniture() {
@@ -585,7 +626,8 @@ class AdministratorFurniture extends React.Component {
         this.setEditModalStringFieldState('description', String(furniture.description));
         this.setEditModalStringFieldState('status', String(furniture.status));
         this.setEditModalNumberFieldState('price', furniture.price);
-        // features ->>>>
+        this.setEditModalNumberFieldState('availableOne', furniture.availableOne);
+        this.setEditModalNumberFieldState('availableTwo', furniture.availableTwo);// features ->>>>
         if(!furniture.categoryId) {
             return
         }
@@ -619,6 +661,8 @@ class AdministratorFurniture extends React.Component {
             description: this.state.editModal.description,
             price: this.state.editModal.price,
             status: this.state.editModal.status,
+            availableOne: this.state.editModal.availableOne,
+            availableTwo: this.state.editModal.availableTwo,
             features: this.state.editModal.features
             .filter(feature => feature.use === 1)
             .map(feature => ({

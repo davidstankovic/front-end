@@ -4,6 +4,8 @@ export default interface ApiFurnitureDto{
     categoryId: number;
     description: string;
     status: "available" | "visible" | "hidden";
+    availableOne: number;
+    availableTwo: number;
     furniturePrices: {
         furniturePriceId: number;
         price: number;

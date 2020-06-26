@@ -21,6 +21,7 @@ import AdministratorFurniture from './components/AdministratorFurniture/Administ
 import AdministratorPhoto from './components/AdministratorPhoto/AdministratorPhoto';
 import FurniturePage from './components/FurniturePage/FurniturePage';
 import SimpleMap from './components/SimpleMap/SimpleMap';
+import AdministratorLogoutPage from './components/AdministratorLogoutPage/AdministratorLogoutPage';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -33,6 +34,7 @@ ReactDOM.render(
         <Route path="/category/:cId" component={ CategoryPage }/>
         <Route path="/furniture/:fId" component={ FurniturePage }/>
         <Route path="/administrator/login" component={ AdministratorLoginPage }/>
+        <Route path="/administrator/login" component={ AdministratorLogoutPage }/>
         <Route exact path="/administrator/dashboard" component={ AdministratorDashboard }/>
         <Route exact path="/administrator/dashboard/category" component={ AdministratorCategory }/>
         <Route path="/administrator/dashboard/feature/:cId" component={ AdministratorFeature }/>

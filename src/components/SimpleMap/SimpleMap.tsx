@@ -5,14 +5,19 @@ import Marker from './Marker';
 
 const SimpleMap = (props: any) => {
     const { classes } = props
-    const [center] = useState({lat: 44.7866, lng: 20.4489 });
+    const [center] = useState({lat: 44.787197, lng: 20.457273 });
     const [zoom] = useState(11);
     //const image = "http://psce.pw/T8WRA"
-    let colorOne='red'; 
-    let colorTwo='grey';
+    let colorOne = 'grey'
+    let colorTwo = 'grey'
+    if(props.availableOne === 1){
+      colorOne = 'red'
+    }
+    if(props.availableTwo === 1){
+      colorTwo = 'red'
+    }
     return (
         <div style={{ height: '200px', width: '200px' }}>
-        <h1>{props.status}</h1>
         <GoogleMapReact
           bootstrapURLKeys={{ key: '' }}
           defaultCenter={center}
@@ -23,16 +28,16 @@ const SimpleMap = (props: any) => {
             lng={20.459513}
             name="Furniture Store 2"
             color = { colorOne }
-            address="Gornjačka 94-116, Beograd"
+            address="Deligradska 40, Beograd"
             //anchor= {image}
           />
 
         <Marker
-            lat={44.796661}
-            lng={20.460186}
+            lat={44.822705}
+            lng={20.461270}
             name="Furniture Store 1"
             color = { colorTwo }
-            address="Deligradska 40, Beograd"
+            address="Cara dušana 46, Beograd"
           />
         </GoogleMapReact>
       </div>
