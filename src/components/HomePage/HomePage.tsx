@@ -5,9 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CategoryType from '../../types/CategoryType';
 import { Link } from 'react-router-dom';
 import api, { ApiResponse } from '../../api/api';
+import { ApiConfig } from "../../config/api.confing";
 import RoleMainMenu from '../RoleMainMenu/RoleMainMenu';
 import ApiCategoryDto from '../../dtos/ApiCategoryDto';
-
 
 interface HomePageState {
   // isUserLoggedIn: boolean;
@@ -41,11 +41,14 @@ class HomePage extends React.Component {
       })
   }
 
+  
+
   private putCategoriesInState(data?: ApiCategoryDto[]){
     const categories: CategoryType[] = data.map(category => {
       return {
         categoryId: category.categoryId,
         name: category.name,
+        imagePath: category.imagePath,
         items: []
       }
     })
@@ -82,6 +85,10 @@ class HomePage extends React.Component {
         <Card.Body>
         <Card.Title as="p">
           { category.name }
+          
+          <img alt={ "Photo " + category.categoryId }
+                             src={ ApiConfig.PHOTO_PATH + category.imagePath }
+                             className="w-100"/>
         </Card.Title>
         <Link to={ `/category/${ category.categoryId }`} className="btn btn-primary btn-block btn-sm">
           Open Category

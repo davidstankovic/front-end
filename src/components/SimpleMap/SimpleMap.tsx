@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import GoogleMapReact from 'google-map-react';
 import Marker from './Marker';
+import { ApiConfig } from '../../config/api.confing';
 
 const SimpleMap = (props: any) => {
     const { classes } = props
@@ -29,6 +30,7 @@ const SimpleMap = (props: any) => {
             name="Furniture Store 2"
             color = { colorOne }
             address="Deligradska 40, Beograd"
+            image={ApiConfig.PHOTO_PATH + 'radnja1.jpg'}
             //anchor= {image}
           />
 
@@ -38,6 +40,7 @@ const SimpleMap = (props: any) => {
             name="Furniture Store 1"
             color = { colorTwo }
             address="Cara dušana 46, Beograd"
+            image={ApiConfig.PHOTO_PATH + 'radnja2.jpg'}
           />
         </GoogleMapReact>
       </div>

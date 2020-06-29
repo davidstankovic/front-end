@@ -38,6 +38,7 @@ interface CategoryPageState {
         name: string;
         values: string[];
     }[];
+
 }
 
 interface FurnitureDto {
@@ -297,16 +298,20 @@ export default class CategoryPage extends React.Component<CategoryPageProperties
         );
     }
     private singleCategory(category: CategoryType) {
+        console.log(category.imagePath)
         return (
             <Col lg="3" md="4" sm="6" xs="12">
                 <Card className="mb-3">
                     <Card.Body>
                         <Card.Title as="p">
                             {category.name}
+                     <img alt={ "Photo " + category.categoryId }
+                             src={ ApiConfig.PHOTO_PATH + category.imagePath }
+                             className="w-100"/>
                         </Card.Title>
                         <Link to={`/category/${category.categoryId}`} className="btn btn-primary btn-block btn-sm">
                             Open Category
-            </Link>
+                        </Link>
                     </Card.Body>
                 </Card>
             </Col>
@@ -386,7 +391,8 @@ export default class CategoryPage extends React.Component<CategoryPageProperties
                 const subcategories: CategoryType[] = res.data.categories.map((category: ApiCategoryDto) => {
                     return {
                         categoryId: category.categoryId,
-                        name: category.name
+                        name: category.name,
+                        imagePath: category.imagePath
                     }
                 });
 

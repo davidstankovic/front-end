@@ -220,11 +220,12 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
 
 
     render() {
-        
         return (
             <Container>
                 <RoleMainMenu role="visitor" />  
+                
                  { this.state.furnitures.map(furniture => (
+                    
                 <>
                     <h1 className="my-4">{ furniture.name } 
                             <small>|{ furniture.category?.name }</small>
@@ -245,7 +246,6 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
                         <ul>
                             { this.state.editModal.features.map( this.printEditModalFeatureInput, this) }
                         </ul>
-                        Availability: { furniture.status }
                         <br/>
                         <div>
                         Price: { furniture.price } $
