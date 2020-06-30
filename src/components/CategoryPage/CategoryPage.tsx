@@ -43,6 +43,7 @@ interface CategoryPageState {
 
 interface FurnitureDto {
     furnitureId: number;
+    status?: "available" | "visible" | "hidden";
     name: string;
     description?: string;
     furniturePrices?: {
@@ -348,9 +349,22 @@ export default class CategoryPage extends React.Component<CategoryPageProperties
                         <Card.Title as="p">
                             <strong> {furniture.name} </strong>
                         </Card.Title>
+                        
+                        {furniture.status === 'available' &&
                         <Card.Text>
                             Price: {Number(furniture.price).toFixed(2)} $
-            </Card.Text>
+                        </Card.Text>
+                        }
+                        {furniture.status === 'hidden' &&
+                        <Card.Text>
+                            <strong>Out of stock!</strong>
+                        </Card.Text>
+                        }
+                        {furniture.status === 'visible' &&
+                        <Card.Text>
+                            <strong>Out of stock!</strong>
+                        </Card.Text>
+                        }
                         <Link to={`/furniture/${furniture.furnitureId}`} className="btn btn-primary btn-block btn-sm">
                             Open Furniture page
             </Link>
@@ -452,6 +466,7 @@ export default class CategoryPage extends React.Component<CategoryPageProperties
                     furnitureId: furniture.furnitureId,
                     name: furniture.name,
                     description: furniture.description,
+                    status: furniture.status,
                     imageUrl: '',
                     price: 0,
                 }

@@ -24,9 +24,6 @@ export default class RoleMainMenu extends React.Component <RoleMainMenuPropertie
     getVisitorMenuItems(): MainMenuItem[]{
         return[
             new MainMenuItem("Home", "/"),
-            new MainMenuItem("Contact", "/contact/"),
-            new MainMenuItem("Customer service", "/service/"),
-            new MainMenuItem("Custom furniture", "/custom/"),
             new MainMenuItem("Administrator log in", "/administrator/login/")
         ];
     }

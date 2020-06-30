@@ -247,14 +247,33 @@ class FurniturePage extends React.Component<FurniturePageProperties> {
                             { this.state.editModal.features.map( this.printEditModalFeatureInput, this) }
                         </ul>
                         <br/>
+                        {furniture.status === 'available' && 
                         <div>
-                        Price: { furniture.price } $
+                        {furniture.availableOne === 0 && furniture.availableTwo === 0 &&
+                            <div><strong>Furniture not available in any store!</strong></div>
+                        }
+                        Price: {furniture.price } $
+                        
                         <SimpleMap {...furniture }></SimpleMap>
                         </div>
+                        }
+                        {furniture.status === 'visible' &&
+                        <div>
+                            <meta name="robots" content="noindex" />
+                            <strong>Out of stock!</strong>
+                        </div>
+                        }
+                        {furniture.status === 'hidden' &&
+                        <div>
+                        <meta name="robots" content="noindex" />
+                        <strong>Out of stock!</strong>
+                        </div>
+                        }
                         </div>
                     </div>
+                    {this.state.photos.map(this.printSinglePhoto, this).length > 1 &&
                     <h3 className="my-4">More images:</h3>
-
+                    }
                     <div className="row mb-4 row-sm-6">
 
                     <Row xs="12" sm="6" md="4" lg="3">

@@ -28,9 +28,6 @@ ReactDOM.render(
     <HashRouter>
       <Switch>
         <Route exact path="/" component={ HomePage }/>
-        <Route path="/contact" component={ ContactPage }/>
-        <Route path="/service" component={ CustomerService }/>
-        <Route path="/custom" component={ CustomFurniture }/>
         <Route path="/category/:cId" component={ CategoryPage }/>
         <Route path="/furniture/:fId" component={ FurniturePage }/>
         <Route path="/administrator/login" component={ AdministratorLoginPage }/>
